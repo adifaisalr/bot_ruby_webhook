@@ -53,12 +53,12 @@ class Main < Sinatra::Base
   end
 
   def notify(assignee, message)
-    settings.bot.api.send_message(chat_id: assignee.telegram_user_id, text: message, parse_mode: 'Markdown') if assignee.telegram_user_id
+    settings.bot.api.send_message(chat_id: assignee.telegram_user_id, text: message, parse_mode: 'Markdown') if assignee&.telegram_user_id
   end
 
 
   def do_something_with_text(text, username)
-    reply = ""
+    reply = ''
     if greet.include? text.downcase
       reply = 'Hi Sayang 💙'
     elsif text == '/start'
@@ -127,6 +127,7 @@ class Main < Sinatra::Base
   end
 
   def find_or_create_user(jira_user_key)
+    return nil if jira_user_key.nil?
     user = User.find_by_jira_user_key(jira_user_key)
     return user if user
     User.create!(
