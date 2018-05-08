@@ -60,20 +60,11 @@ class Main < Sinatra::Base
   def do_something_with_text(text, username)
     reply = ''
     text = text.split('@').first
+
     if greet.match text.downcase
       reply = 'Halo kak!'
-    elsif text == '/start'
-      reply = 'Welcome to Point!'
-    elsif text == '/issues'
-      user = User.find_by_telegram_username('@' + username)
-      if user
-        issues = Issue.where(assignee_id: user.id)
-        reply = "Haiii @#{username}, ini task-task kamu sekarang\n"
-        issues.each_with_index do |issue, index|
-          reply += issue_list_message(issue, index + 1)
-          reply += "\n"
-        end
-      end
+    end
+
     if text.start_with?('/')
       if text == '/start'
         reply = 'Welcome to Point!'
