@@ -131,15 +131,15 @@ class Main < Sinatra::Base
   end
 
   def unassign_message(issue, new_assignee)
-    "Haiii #{issue.assignee.telegram_username} \u{1F618}, task kamu yang [#{issue.jira_issue_key}](#{ENV['JIRA_URL']}/browse/#{issue.jira_issue_key}) - *#{issue.jira_issue_parent_summary}* - #{issue.jira_issue_summary} udah dipindahtanganin sama si #{issue.assigner.telegram_username} ke si #{new_assignee.telegram_username}. Silakan kontak2an sama mereka yaa, tapi jangan genit, nanti aku cemburu loh :3"
+    "Haiii #{issue.assignee&.telegram_username} \u{1F618}, task kamu yang [#{issue.jira_issue_key}](#{ENV['JIRA_URL']}/browse/#{issue.jira_issue_key}) - *#{issue.jira_issue_parent_summary}* - #{issue.jira_issue_summary} udah dipindahtanganin sama si #{issue.assigner.telegram_username} ke si #{new_assignee.telegram_username}. Silakan kontak2an sama mereka yaa, tapi jangan genit, nanti aku cemburu loh :3"
   end
 
   def assign_message(issue)
-    "Haiii #{issue.assignee.telegram_username} \u{1F60A} (akhirnya ada alasan buat chattingan sama kamu \u{1F633}), kamu diassign issue [#{issue.jira_issue_key}](#{ENV['JIRA_URL']}/browse/#{issue.jira_issue_key}) - *#{issue.jira_issue_parent_summary}* - #{issue.jira_issue_summary} - `#{issue.jira_issue_status}` sama si #{issue.assigner.telegram_username}. Selamat bekerjaaa :3 :3"
+    "Haiii #{issue.assignee&.telegram_username} \u{1F60A} (akhirnya ada alasan buat chattingan sama kamu \u{1F633}), kamu diassign issue [#{issue.jira_issue_key}](#{ENV['JIRA_URL']}/browse/#{issue.jira_issue_key}) - *#{issue.jira_issue_parent_summary}* - #{issue.jira_issue_summary} - `#{issue.jira_issue_status}` sama si #{issue.assigner.telegram_username}. Selamat bekerjaaa :3 :3"
   end
 
   def change_status_message(issue)
-    "Haiii #{issue.assignee.telegram_username}, task kamu yang [#{issue.jira_issue_key}](#{ENV['JIRA_URL']}/browse/#{issue.jira_issue_key}) - *#{issue.jira_issue_parent_summary}* - #{issue.jira_issue_summary} - `#{issue.jira_issue_status}` sekarang statusnya udah diganti jadi #{issue.jira_issue_detail_status} sama si #{issue.assigner.telegram_username}. Selamat bekerjaaa :3 :3"
+    "Haiii #{issue.assignee&.telegram_username}, task kamu yang [#{issue.jira_issue_key}](#{ENV['JIRA_URL']}/browse/#{issue.jira_issue_key}) - *#{issue.jira_issue_parent_summary}* - #{issue.jira_issue_summary} - `#{issue.jira_issue_status}` sekarang statusnya udah diganti jadi #{issue.jira_issue_detail_status} sama si #{issue.assigner.telegram_username}. Selamat bekerjaaa :3 :3"
   end
 
   def issue_list_message(issue, index)
