@@ -58,7 +58,7 @@ class Main < Sinatra::Base
 
 
   def do_something_with_text(text, username)
-    reply = "You just typed `#{text}`"
+    reply = ""
     if greet.include? text.downcase
       reply = 'Hi Sayang 💙'
     elsif text == '/start'
