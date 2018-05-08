@@ -59,7 +59,9 @@ class Main < Sinatra::Base
 
   def do_something_with_text(text, username)
     reply = "You just typed `#{text}`"
-    if text == '/start'
+    if greet.include? text.downcase
+      reply = 'Hi Sayang 💙'
+    elsif text == '/start'
       reply = 'Welcome to Point!'
     elsif text == '/issues'
       user = User.find_by_telegram_username('@' + username)
@@ -130,5 +132,9 @@ class Main < Sinatra::Base
     User.create!(
       jira_user_key: jira_user_key
     )
+  end
+
+  def greet
+    ['hi', 'halo', 'hay']
   end
 end
