@@ -47,7 +47,7 @@ class Main < Sinatra::Base
       message = update['message']
       puts message.to_s
       reply = do_something_with_text(message['text'], message['from']['username'])
-      settings.bot.api.send_message(chat_id: message['chat']['id'], text: reply, reply_to_message_id: message['message_id'], parse_mode: 'Markdown')
+      settings.bot.api.send_message(chat_id: message['chat']['id'], text: reply, reply_to_message_id: message['message_id'], parse_mode: 'Markdown') unless reply.empty?
     end
     200
   end
@@ -59,8 +59,9 @@ class Main < Sinatra::Base
 
   def do_something_with_text(text, username)
     reply = ''
+    text = text.split('@').first
     if greet.match text.downcase
-      reply = 'Halo'
+      reply = 'Halo kak!'
     elsif text == '/start'
       reply = 'Welcome to Point!'
     elsif text == '/issues'
@@ -72,17 +73,36 @@ class Main < Sinatra::Base
           reply += issue_list_message(issue, index + 1)
           reply += "\n"
         end
+      end
+    if text.start_with?('/')
+      if text == '/start'
+        reply = 'Welcome to Point!'
+      elsif text == '/issues'
+        user = User.find_by_telegram_username('@' + username)
+        if user
+          issues = Issue.where(assignee_id: user.id)
+          reply = "Haiii @#{username}, ini task-task kamu sekarang\n"
+          issues.each_with_index do |issue, index|
+            reply += issue_list_message(issue, index + 1)
+            reply += "\n"
+          end
 
-        if issues.size >= 3
-          reply += "Banyak ya? Uuuu semangat yaa, jangan lupa jaga kesehatan yaa biar ngga sakit"
-        elsif issues.size > 0
-          reply += "Kamu yang semangat ya, kalo rajin ntar jodohnya lancar loh"
-        else
-          reply += "Eehh nggaada ya? Coba tanya sama PM/APM kamu gih, siapa tau ada yang kamu bisa bantu kan"
+          if issues.size >= 3
+            reply += "Banyak ya? Uuuu semangat yaa, jangan lupa jaga kesehatan yaa biar ngga sakit"
+          elsif issues.size > 0
+            reply += "Kamu yang semangat ya, kalo rajin ntar jodohnya lancar loh"
+          else
+            reply += "Eehh nggaada ya? Coba tanya sama PM/APM kamu gih, siapa tau ada yang kamu bisa bantu kan"
+          end
         end
+      elsif text == '/help'
+        reply = get_available_commands
+      else
+        reply = "Ummm aku ngga ngerti bahasa kamu nih \u{1F616}. Coba ketik /help biar kita bisa semakin memahami"
       end
     end
-    reply.empty? ? text : reply
+
+    reply
   end
 
   def serialize_issue(params)
@@ -133,6 +153,11 @@ class Main < Sinatra::Base
     User.create!(
       jira_user_key: jira_user_key
     )
+  end
+
+  def get_available_commands
+    "ini nihh bahasa yang aku pahaminn:\n" +
+    "*-* /issues buat liat issue-issue yang diassign ke kamu"
   end
 
   def greet
