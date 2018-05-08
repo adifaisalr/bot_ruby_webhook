@@ -23,8 +23,8 @@ class Main < Sinatra::Base
 
     if issue
       if params[:changelog][:items].last[:field] == 'assignee'
-        new_assignee = User.find_by_jira_user_key(params[:changelog][:items].last[:to])
-
+        jira_user_key = params[:changelog][:items].last[:to]
+        new_assignee = find_or_create_user(jira_user_key)
         notify(issue.assignee, unassign_message(issue, new_assignee))
         issue.update_attributes!(serialize_issue(params))
         notify(issue.assignee, assign_message(issue))
@@ -53,7 +53,7 @@ class Main < Sinatra::Base
   end
 
   def notify(assignee, message)
-    settings.bot.api.send_message(chat_id: assignee.telegram_user_id, text: message, parse_mode: 'Markdown')
+    settings.bot.api.send_message(chat_id: assignee.telegram_user_id, text: message, parse_mode: 'Markdown') if assignee.telegram_user_id
   end
 
 
@@ -84,10 +84,10 @@ class Main < Sinatra::Base
   end
 
   def serialize_issue(params)
-    assignee_jira_email = params[:issue][:fields][:assignee][:emailAddress]
-    assigner_jira_email = params[:user][:emailAddress]
-    assignee = User.find_by_jira_user_email(assignee_jira_email)
-    assigner = User.find_by_jira_user_email(assigner_jira_email)
+    assignee_jira_key = params[:issue][:fields][:assignee][:key]
+    assigner_jira_key = params[:user][:key]
+    assignee = find_or_create_user(assignee_jira_key)
+    assigner = find_or_create_user(assigner_jira_key)
 
     jira_issue_id = params[:issue][:id]
     jira_issue_key = params[:issue][:key]
@@ -122,5 +122,13 @@ class Main < Sinatra::Base
 
   def issue_list_message(issue, index)
     "*#{index}.* [#{issue.jira_issue_key}](#{ENV['JIRA_URL']}/browse/#{issue.jira_issue_key}) - *#{issue.jira_issue_parent_summary}* - #{issue.jira_issue_summary} - status: `#{issue.jira_issue_status}`"
+  end
+
+  def find_or_create_user(jira_user_key)
+    user = User.find_by_jira_user_key(jira_user_key)
+    return user if user
+    User.create!(
+      jira_user_key: jira_user_key
+    )
   end
 end
