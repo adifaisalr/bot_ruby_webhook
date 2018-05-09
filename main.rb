@@ -58,6 +58,7 @@ class Main < Sinatra::Base
 
 
   def do_something_with_text(text, username)
+    return 'Welcome to Point!' if text.nil?
     reply = ''
     text = text.split('@').first
 
