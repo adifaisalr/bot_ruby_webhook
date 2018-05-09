@@ -80,11 +80,11 @@ class Main < Sinatra::Base
           end
 
           if issues.size >= 3
-            reply += "Banyak ya? Uuuu semangat yaa, jangan lupa jaga kesehatan yaa biar ngga sakit"
+            reply += "\nBanyak ya? Uuuu semangat yaa, jangan lupa jaga kesehatan yaa biar ngga sakit"
           elsif issues.size > 0
-            reply += "Kamu yang semangat ya, kalo rajin ntar jodohnya lancar loh"
+            reply += "\nKamu yang semangat ya, kalo rajin ntar jodohnya lancar loh"
           else
-            reply += "Eehh nggaada ya? Coba tanya sama PM/APM kamu gih, siapa tau ada yang kamu bisa bantu kan"
+            reply += "\nEehh nggaada ya? Coba tanya sama PM/APM kamu gih, siapa tau ada yang kamu bisa bantu kan"
           end
         end
       elsif text == '/help'
