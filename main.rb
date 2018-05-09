@@ -131,7 +131,7 @@ class Main < Sinatra::Base
   end
 
   def change_status_message(issue)
-    "Haiii #{issue.assignee&.handle}, task kamu yang [#{issue.jira_issue_key}](#{ENV['JIRA_URL']}/browse/#{issue.jira_issue_key}) - *#{issue.jira_issue_parent_summary}* - #{issue.jira_issue_summary} - `#{issue.jira_issue_status}` sekarang statusnya udah diganti jadi #{issue.jira_issue_detail_status} sama si #{issue.assigner.handle}. Selamat bekerjaaa :3 :3"
+    "Haiii #{issue.assignee&.handle}, task kamu yang [#{issue.jira_issue_key}](#{ENV['JIRA_URL']}/browse/#{issue.jira_issue_key}) - *#{issue.jira_issue_parent_summary}* - #{issue.jira_issue_summary} sekarang statusnya udah diganti jadi `#{issue.jira_issue_status}` sama si #{issue.assigner.handle}. Selamat bekerjaaa :3 :3"
   end
 
   def issue_list_message(issue, index)
