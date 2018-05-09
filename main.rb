@@ -53,12 +53,12 @@ class Main < Sinatra::Base
   end
 
   def notify(assignee, message)
-    settings.bot.api.send_message(chat_id: assignee.telegram_user_id, text: message, parse_mode: 'Markdown') if assignee&.telegram_user_id
+    settings.bot.api.send_message(chat_id: assignee.telegram_user_id, text: message, parse_mode: 'Markdown') if assignee&.telegram_user_id && !message.nil? && !message.empty?
   end
 
 
   def do_something_with_text(text, username)
-    return 'Welcome to Point!' if text.nil?
+    return nil if text.nil?
     reply = ''
     text = text.split('@').first
 
