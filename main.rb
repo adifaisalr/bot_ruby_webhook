@@ -47,7 +47,7 @@ class Main < Sinatra::Base
       message = update['message']
       puts message.to_s
       reply = do_something_with_text(message['text'], message['from']['username'])
-      settings.bot.api.send_message(chat_id: message['chat']['id'], text: reply, reply_to_message_id: message['message_id'], parse_mode: 'Markdown') unless reply.empty?
+      settings.bot.api.send_message(chat_id: message['chat']['id'], text: reply, reply_to_message_id: message['message_id'], parse_mode: 'Markdown', disable_web_page_preview: true) unless reply.empty?
     end
     200
   end
