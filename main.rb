@@ -51,9 +51,9 @@ class Main < Sinatra::Base
       replies.each_with_index do |reply, index|
         puts reply
         if index == 0
-          settings.bot.api.send_message(chat_id: message['chat']['id'], text: reply, reply_to_message_id: message['message_id'], parse_mode: 'Markdown', disable_web_page_preview: true) unless reply.empty?
+          settings.bot.api.send_message(chat_id: message['chat']['id'], text: reply, reply_to_message_id: message['message_id'], parse_mode: 'HTML', disable_web_page_preview: true) unless reply.empty?
         else
-          settings.bot.api.send_message(chat_id: message['chat']['id'], text: reply, parse_mode: 'Markdown', disable_web_page_preview: true) unless reply.empty?
+          settings.bot.api.send_message(chat_id: message['chat']['id'], text: reply, parse_mode: 'HTML', disable_web_page_preview: true) unless reply.empty?
         end
       end
     end
@@ -61,7 +61,7 @@ class Main < Sinatra::Base
   end
 
   def notify(assignee, message)
-    settings.bot.api.send_message(chat_id: assignee.telegram_user_id, text: message, parse_mode: 'Markdown', disable_web_page_preview: true) if assignee&.telegram_user_id
+    settings.bot.api.send_message(chat_id: assignee.telegram_user_id, text: message, parse_mode: 'HTML', disable_web_page_preview: true) if assignee&.telegram_user_id
   end
 
   def format_to_messages(reply)
@@ -145,19 +145,19 @@ class Main < Sinatra::Base
   end
 
   def unassign_message(issue, new_assignee)
-    "Haiii #{issue.assignee&.handle} \u{1F618}, task kamu yang [#{issue.jira_issue_key}](#{ENV['JIRA_URL']}/browse/#{issue.jira_issue_key}) - *#{issue.jira_issue_parent_summary}* - #{issue.jira_issue_summary} udah dipindahtanganin sama si #{issue.assigner.handle} ke si #{new_assignee.handle}. Silakan kontak2an sama mereka yaa, tapi jangan genit, nanti aku cemburu loh :3"
+    "Haiii #{issue.assignee&.handle} \u{1F618}, task kamu yang <a href=\"#{ENV['JIRA_URL']}/browse/#{issue.jira_issue_key}\">#{issue.jira_issue_key}</a> - <b>#{issue.jira_issue_parent_summary}</b> - #{issue.jira_issue_summary} udah dipindahtanganin sama si #{issue.assigner.handle} ke si #{new_assignee.handle}. Silakan kontak2an sama mereka yaa, tapi jangan genit, nanti aku cemburu loh :3"
   end
 
   def assign_message(issue)
-    "Haiii #{issue.assignee&.handle} \u{1F60A} (akhirnya ada alasan buat chattingan sama kamu \u{1F633}), kamu diassign issue [#{issue.jira_issue_key}](#{ENV['JIRA_URL']}/browse/#{issue.jira_issue_key}) - *#{issue.jira_issue_parent_summary}* - #{issue.jira_issue_summary} - `#{issue.jira_issue_status}` sama si #{issue.assigner.handle}. Selamat bekerjaaa :3 :3"
+    "Haiii #{issue.assignee&.handle} \u{1F60A} (akhirnya ada alasan buat chattingan sama kamu \u{1F633}), kamu diassign issue <a href=\"#{ENV['JIRA_URL']}/browse/#{issue.jira_issue_key}\">#{issue.jira_issue_key}<a/> - <b>#{issue.jira_issue_parent_summary}</b> - #{issue.jira_issue_summary} - <code>#{issue.jira_issue_status}</code> sama si #{issue.assigner.handle}. Selamat bekerjaaa :3 :3"
   end
 
   def change_status_message(issue)
-    "Haiii #{issue.assignee&.handle}, task kamu yang [#{issue.jira_issue_key}](#{ENV['JIRA_URL']}/browse/#{issue.jira_issue_key}) - *#{issue.jira_issue_parent_summary}* - #{issue.jira_issue_summary} sekarang statusnya udah diganti jadi `#{issue.jira_issue_status}` sama si #{issue.assigner.handle}. Selamat bekerjaaa :3 :3"
+    "Haiii #{issue.assignee&.handle}, task kamu yang <a href=\"#{ENV['JIRA_URL']}/browse/#{issue.jira_issue_key}\">#{issue.jira_issue_key}</a> - <b>#{issue.jira_issue_parent_summary}</b> - #{issue.jira_issue_summary} sekarang statusnya udah diganti jadi <code>#{issue.jira_issue_status}</code> sama si #{issue.assigner.handle}. Selamat bekerjaaa :3 :3"
   end
 
   def issue_list_message(issue, index)
-    "*#{index}.* [#{issue.jira_issue_key}](#{ENV['JIRA_URL']}/browse/#{issue.jira_issue_key}) - *#{issue.jira_issue_parent_summary}* - #{issue.jira_issue_summary} - status: `#{issue.jira_issue_status}`"
+    "<b>#{index}.</b> <a href=\"#{ENV['JIRA_URL']}/browse/#{issue.jira_issue_key}\">#{issue.jira_issue_key}</a> - <b>#{issue.jira_issue_parent_summary}</b> - #{issue.jira_issue_summary} - status: <code>#{issue.jira_issue_status}</code>"
   end
 
   def find_or_create_user(jira_user_key)
@@ -171,7 +171,7 @@ class Main < Sinatra::Base
 
   def get_available_commands
     "ini nihh bahasa yang aku pahaminn:\n" +
-    "*-* /issues buat liat issue-issue yang diassign ke kamu"
+    "<b>-</b> /issues buat liat issue-issue yang diassign ke kamu"
   end
 
   def greet
