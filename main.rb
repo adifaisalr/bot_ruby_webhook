@@ -47,7 +47,14 @@ class Main < Sinatra::Base
       message = update['message']
       puts message.to_s
       reply = do_something_with_text(message['text'], message['from']['username'])
-      settings.bot.api.send_message(chat_id: message['chat']['id'], text: reply, reply_to_message_id: message['message_id'], parse_mode: 'Markdown', disable_web_page_preview: true) unless reply.empty?
+      replies = format_to_messages(reply)
+      replies.each_with_index do |reply, index|
+        if index == 0
+          settings.bot.api.send_message(chat_id: message['chat']['id'], text: reply, reply_to_message_id: message['message_id'], parse_mode: 'Markdown', disable_web_page_preview: true) unless reply.empty?
+        else
+          settings.bot.api.send_message(chat_id: message['chat']['id'], text: reply, parse_mode: 'Markdown', disable_web_page_preview: true) unless reply.empty?
+        end
+      end
     end
     200
   end
@@ -56,6 +63,21 @@ class Main < Sinatra::Base
     settings.bot.api.send_message(chat_id: assignee.telegram_user_id, text: message, parse_mode: 'Markdown', disable_web_page_preview: true) if assignee&.telegram_user_id
   end
 
+  def format_to_messages(reply)
+    lines_count = 10
+    reply_lines = reply.split("\n")
+    replies = []
+    reply_text = ''
+    reply_lines.each_with_index do |reply_line, index|
+      reply_text += reply_line + "\n"
+      if (index + 1) % lines_count == 0
+        replies << reply_text
+        reply_text = ''
+      end
+    end
+    replies << reply_text if !reply_text.empty?
+    replies
+  end
 
   def do_something_with_text(text, username)
     return '' if text.nil?
@@ -75,8 +97,7 @@ class Main < Sinatra::Base
           issues = Issue.where(assignee_id: user.id)
           reply = "Haiii @#{username}, ini task-task kamu sekarang\n"
           issues.each_with_index do |issue, index|
-            reply += issue_list_message(issue, index + 1)
-            reply += "\n"
+            reply += issue_list_message(issue, index + 1) + "\n"
           end
 
           if issues.size >= 3
