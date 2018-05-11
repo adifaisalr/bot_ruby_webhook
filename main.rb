@@ -53,7 +53,7 @@ class Main < Sinatra::Base
   end
 
   def notify(assignee, message)
-    settings.bot.api.send_message(chat_id: assignee.telegram_user_id, text: message, parse_mode: 'Markdown') if assignee&.telegram_user_id
+    settings.bot.api.send_message(chat_id: assignee.telegram_user_id, text: message, parse_mode: 'Markdown', disable_web_page_preview: true) if assignee&.telegram_user_id
   end
 
 
