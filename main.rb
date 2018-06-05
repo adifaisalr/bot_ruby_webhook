@@ -92,11 +92,16 @@ class Main < Sinatra::Base
     if text.start_with?('/')
       if text == '/start'
         reply = 'Welcome to Point!'
-      elsif text == '/issues'
+      elsif text.start_with?('/issues')
+        second_string = text.split(' ', 2)[1]
+        all = !second_string.nil?
+
         user = User.find_by_telegram_username('@' + username)
         if user
           issues = Issue.where(assignee_id: user.id)
-          reply = "Haiii @#{username}, ini task-task kamu sekarang\n"
+          issues = issues.reject { |issue| issue.jira_issue_status == 'Done'} unless all
+
+          reply = "Haiii @#{username}, ini task-task #{all ? '' : 'active '}kamu sekarang\n"
           issues.each_with_index do |issue, index|
             reply += issue_list_message(issue, index + 1) + "\n"
           end
