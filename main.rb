@@ -85,9 +85,9 @@ class Main < Sinatra::Base
     reply = ''
     text = text.split('@').first
 
-    if greet.match text.downcase
-      reply = 'Halo kak!'
-    end
+    # if greet.match text.downcase
+    #   reply = 'Halo kak!'
+    # end
 
     if text.start_with?('/')
       if text == '/start'
