@@ -117,7 +117,7 @@ class Main < Sinatra::Base
       elsif text == '/help'
         reply = get_available_commands
       else
-        reply = "Ummm aku ngga ngerti bahasa kamu nih \u{1F616}. Coba ketik /help biar kita bisa semakin memahami"
+        reply = ''#"Ummm aku ngga ngerti bahasa kamu nih \u{1F616}. Coba ketik /help biar kita bisa semakin memahami"
       end
     end
 
